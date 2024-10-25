@@ -1,34 +1,13 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\EventController;
+use App\Http\Controllers\ContactController;
+use App\Http\Controllers\ProductController;
 
-Route::get('/', function () {
+Route::get('/', [EventController::class, 'index']);
+Route::get('/events/create', [EventController::class, 'create']);
+Route::get('/contact', [ContactController::class, 'contact']);
+Route::get('/products', [ProductController::class, 'products']);
 
-    $fruta = 'Maçãs';
-    $quantidade = 2;
-
-    $arr = [1,2,3,4,5,6,7];
-
-    return view('welcome', 
-        [
-            'array' => $arr,
-            'fruta' => $fruta, 
-            'quantidade' => $quantidade
-        ]);
-});
-
-Route::get('/contact', function () {
-    return view('contact');
-});
-
-Route::get('/products', function () {
-
-    $busca = request('search');
-
-    return view('products', ['busca' => $busca]);
-});
-
-Route::get('/product/{id?}', function ($id = 1) {
-    return view('product', ['id' => $id]);
-});
 
