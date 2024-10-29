@@ -4,17 +4,11 @@
 
 @section('content')
 
-<h1>Titulo</h1>
-
-
-@if ($quantidade >= 3) 
-    <p> Você já comeu mais de 3 {{ $fruta }} </p>
-@else
-    <p> Ainda faltam {{ 3 - $quantidade }} {{ $fruta }} </p> 
-@endif
-
-@for ($i = 0; $i < count($array); $i++)
-    <p>{{ $array[$i] }}</p>
-@endfor
+@foreach($events as $event)
+    <p>{{ $event->title }}</p>
+    <p>{{ $event->description }}</p>
+    <p>{{ $event->city }}</p>
+    <p>{{ $event->private }}</p>
+@endforeach
 
 @endsection
