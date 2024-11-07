@@ -84,7 +84,9 @@ class EventController extends Controller
         
         $events = $user->events;
 
-        return view('events.dashboard', ['events' => $events]);
+        $eventsAsParticipants = $user->eventsAsParticipants;
+
+        return view('events.dashboard', ['events' => $events, 'eventsasparticipants' => $eventsAsParticipants]);
     }
 
 
@@ -97,7 +99,13 @@ class EventController extends Controller
 
     public function edit($id){
 
+        $user = auth()->user();
+
         $event = Event::findOrFail($id);
+
+        if($user->id != $event->user->id){
+            redirect('/dashboard');
+        }
 
         return view('events.edit', ['event' => $event]);
 
@@ -132,9 +140,13 @@ class EventController extends Controller
 
         $user = auth()->user();
 
-        $user->eventsAsParticipants()->attach($id);
-
         $event = Event::findOrFail($id);
+
+        if($event->users->contains($user->id)){
+            return redirect('/dashboard')->with('msg', 'Você já esta cadastrado nesse evento');
+        }
+
+        $user->eventsAsParticipants()->attach($id);
 
         return redirect('/dashboard')->with('msg', 'Sua presença está confirmada no evento ' . $event->title);
 
