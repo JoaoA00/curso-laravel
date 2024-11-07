@@ -73,9 +73,14 @@ class EventController extends Controller
 
         $event = Event::findOrFail($id);
 
+        $user = auth()->user();
+
+        $hasUserJoined = ($event->users->contains($user->id));
+
+
         $eventOwner = User::where('id', $event->user_id)->first()->toArray();
 
-        return view('events.show', ['event' => $event, 'eventOwner' => $eventOwner]);
+        return view('events.show', ['event' => $event, 'eventOwner' => $eventOwner, 'hasUserJoined' => $hasUserJoined]);
     }
 
     public function dashboard(){
@@ -142,13 +147,24 @@ class EventController extends Controller
 
         $event = Event::findOrFail($id);
 
-        if($event->users->contains($user->id)){
-            return redirect('/dashboard')->with('msg', 'Você já esta cadastrado nesse evento');
-        }
-
         $user->eventsAsParticipants()->attach($id);
 
         return redirect('/dashboard')->with('msg', 'Sua presença está confirmada no evento ' . $event->title);
+
+    }
+
+    public function leaveEvent($id){
+
+        $user = auth()->user();
+
+        $event = Event::findOrFail($id);
+
+        $user->eventsAsParticipants()->detach($id);
+
+        return redirect('/dashboard')->with('msg', 'Você não está mais cadastrado no evento' . $event->title);
+        
+
+
 
     }
 
